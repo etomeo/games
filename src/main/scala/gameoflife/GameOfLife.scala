@@ -8,34 +8,32 @@ case class Cell(x: Int, y: Int)
  * @param printFunction a function to print the world's status
  */
 class GameOfLife(seed: List[Cell], printFunction: (List[Cell] => Any)) {
-  def printWorld() = printFunction(world)
+  def printWorld() = printFunction(world.toList)
 
-  private var world = seed
+  private var world = seed.toSet
 
   def noMoreLifeOnThePlanet() = world.isEmpty
 
   def iterate() {
-    world match {
-      case Nil => // empty world, do nothing
-      case h :: t =>
-        val Cell(minX, minY) = t.foldLeft(h) { case (Cell(x1, y1), Cell(x2, y2)) => Cell(math.min(x1, x2), math.min(y1, y2))}
-        val Cell(maxX, maxY) = t.foldLeft(h) { case (Cell(x1, y1), Cell(x2, y2)) => Cell(math.max(x1, x2), math.max(y1, y2))}
-        world = (minX - 1 to maxX + 1).flatMap(x => {
-          (minX - 1 to maxY + 1).flatMap(y => {
-            if (world contains Cell(x, y)) {
-              countNeighbours(x, y) match {
-                case n if n < 2 || n > 3 => List() // underpopulation || overpopulated, this cell dies
-                case n if n == 2 || n == 3 => List(Cell(x, y)) // this cell goes to next generation
-              }
-            } else {
-              if (countNeighbours(x, y) == 3) {
-                List(Cell(x, y)) //a new cell is created
-              } else {
-                List()
-              }
+    if (world.nonEmpty) {
+      val Cell(minX, minY) = world.reduceLeft((c, cc) => Cell(math.min(c.x, cc.x), math.min(c.y, cc.y)))
+      val Cell(maxX, maxY) = world.reduceLeft((c, cc) => Cell(math.max(c.x, cc.x), math.max(c.y, cc.y)))
+      world = (minX - 1 to maxX + 1).flatMap(x => {
+        (minX - 1 to maxY + 1).flatMap(y => {
+          if (world contains Cell(x, y)) {
+            countNeighbours(x, y) match {
+              case n if n < 2 || n > 3 => List() // underpopulation || overpopulated, this cell dies
+              case n if n == 2 || n == 3 => List(Cell(x, y)) // this cell goes to next generation
             }
-          })
-        }).toList
+          } else {
+            if (countNeighbours(x, y) == 3) {
+              List(Cell(x, y)) //a new cell is created
+            } else {
+              List()
+            }
+          }
+        })
+      }).toSet
     }
   }
 
