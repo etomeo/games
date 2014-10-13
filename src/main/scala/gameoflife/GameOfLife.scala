@@ -19,7 +19,7 @@ class GameOfLife(seed: List[Cell], printFunction: (List[Cell] => Any)) {
       val Cell(minX, minY) = world.reduceLeft((c, cc) => Cell(math.min(c.x, cc.x), math.min(c.y, cc.y)))
       val Cell(maxX, maxY) = world.reduceLeft((c, cc) => Cell(math.max(c.x, cc.x), math.max(c.y, cc.y)))
       world = (minX - 1 to maxX + 1).flatMap(x => {
-        (minX - 1 to maxY + 1).flatMap(y => {
+        (minY - 1 to maxY + 1).flatMap(y => {
           if (world contains Cell(x, y)) {
             countNeighbours(x, y) match {
               case n if n < 2 || n > 3 => List() // underpopulation || overpopulated, this cell dies
