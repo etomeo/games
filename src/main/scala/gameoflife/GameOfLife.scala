@@ -40,7 +40,7 @@ class GameOfLife(seed: List[Cell], printFunction: (List[Cell] => Any)) {
   /**
    * Counts the neighbours, defined as number of alive cells in the 8 positions around this cell
    */
-  def countNeighbours(x: Int, y: Int) = {
+  def countNeighbours(x: Int, y: Int)= {
     List(x - 1, x, x + 1).flatMap(xC => List(y - 1, y, y + 1).map(yC => !(x == xC && y == yC) && world.contains(Cell(xC, yC)))).count(a => a)
   }
 }

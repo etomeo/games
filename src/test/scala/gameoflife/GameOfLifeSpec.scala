@@ -20,11 +20,53 @@ class GameOfLifeSpec extends FlatSpec with Matchers {
       sb.toString()
   }
 
+  val emptyPrinter: List[Cell] => String = {
+    case _ => ""
+  }
+
+  it should "count zero neighbours" in {
+    val gol = new GameOfLife(List(), emptyPrinter)
+
+    gol.countNeighbours(10, 10) should be === 0
+  }
+
+  it should "count zero neighbours ignoring the given cell" in {
+    val gol = new GameOfLife(List(Cell(0, 0)), emptyPrinter)
+
+    gol.countNeighbours(0, 0) should be === 0
+  }
+
+  it should "count one neighbours" in {
+    val gol = new GameOfLife(List(Cell(0, 0)), emptyPrinter)
+
+    gol.countNeighbours(1, 1) should be === 1
+  }
+
+  it should "count two neighbours" in {
+    val gol = new GameOfLife(List(Cell(1, 0), Cell(0, 1)), emptyPrinter)
+
+    gol.countNeighbours(1, 1) should be === 2
+  }
+
+  it should "count three neighbours" in {
+    val gol = new GameOfLife(List(Cell(1, 0), Cell(1, 1), Cell(0, 1)), emptyPrinter)
+
+    gol.countNeighbours(0, 0) should be === 3
+  }
+
+  it should "count four neighbours" in {
+    val gol = new GameOfLife(List(Cell(0, 0), Cell(1, 0), Cell(0, 1), Cell(2, 2)), emptyPrinter)
+
+    gol.countNeighbours(1, 1) should be === 4
+  }
+
   it should "iterate for an empty world" in {
     val gol = new GameOfLife(List(), printer)
 
+    gol.noMoreLifeOnThePlanet() should be === true
     gol.printWorld() should be === EMPTY_WORLD
     gol.iterate()
+    gol.noMoreLifeOnThePlanet() should be === true
     gol.printWorld() should be === EMPTY_WORLD
   }
 
@@ -85,5 +127,4 @@ class GameOfLifeSpec extends FlatSpec with Matchers {
     gol.iterate()
     gol.printWorld() should be === expectedAfterOddIteration
   }
-
 }

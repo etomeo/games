@@ -4,7 +4,7 @@ package gameoflife
  * Small application to run the blinker pattern on a 10 iterations base and 1 sec pause between iterations
  */
 object GameOfLifeApp extends App {
-
+  // $COVERAGE-OFF$
   val printWorld: List[Cell] => Any = {
     case Nil => println("No more life on this planet...")
     case world =>
@@ -34,4 +34,6 @@ object GameOfLifeApp extends App {
     gol.iterate()
     gol.printWorld()
   })
+
+  // $COVERAGE-ON$
 }
